@@ -1,0 +1,48 @@
+.gunman_go {
+	background: url("../img/gunman.png");
+    animation: go 0.5s steps(3) infinite;
+}
+
+.gunman_stand {
+	background: url("../img/gunman.png");
+    background-position: -99px 0;    
+}
+
+.gunman_dead {
+	background: url("../img/gunman.png");
+    /*animation: dead 0.5s steps(1);*/
+    background-position: -371px 0;
+}
+
+.gunman_shooting {
+	background: url("../img/gunman.png");
+    animation: shooting 2s steps(4);
+    background-position: -202px 0;
+}
+
+@keyframes go {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -99px 0;
+    }
+}
+
+@keyframes shooting {
+    from {
+        background-position: -202px 0;
+    }
+    to {
+        background-position: -337px 0;
+    }
+}
+
+@keyframes dead {
+    from {
+        background-position: -338px 0;
+    }
+    to {
+        background-position: -371px 0;
+    }
+}
