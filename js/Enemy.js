@@ -1,15 +1,10 @@
 import elements from './ElementsDOM';
 
-let element = elements.cowboy;
-
 let Enemy = (function(){
 
 		var Enemy = function(reactionTime) {
-			// create div for enemy
-			// element = document.createElement("div");
-			
-			element.id = "cowboy";
-			element.classList.add("gunman");
+			this.element = elements.cowboy;
+			this.element.classList.add("gunman");
 			
 			// TODO delete consts > use calc reactionTime
 			this.walkingTime = 3000;
@@ -22,10 +17,10 @@ let Enemy = (function(){
 
 
 		Enemy.prototype.action = function(newState) {
-			var _self = this;
-			this.state = newState;
+			
+			let element = this.element;
 	        
-	        switch(this.state){
+	        switch(newState){
 	            case 'going':	            		            	
 	            	// Add go animation
 	            	element.classList.add("gunman_go");	            	        		
