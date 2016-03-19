@@ -17,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pankovOleksandr/Gunman.git"
+    "url": "git+https://github.com/pankovOleksandr/GunmanApp.git"
   },
   "author": "Alex Pankov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pankovOleksandr/Gunman/issues"
+    "url": "https://github.com/pankovOleksandr/GunmanApp/issues"
   },
-  "homepage": "https://github.com/pankovOleksandr/Gunman#readme"
+  "homepage": "https://github.com/pankovOleksandr/GunmanApp#readme"
 }

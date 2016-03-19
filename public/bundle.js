@@ -77,11 +77,12 @@
 			battle.shooting = setTimeout(function () {
 				battle.changeState("shooting");
 			}, battle.delay.shootingTime);
-			battle.winning = setTimeout(function () {
-				battle.changeState("winning");
+			battle.cowboyWin = setTimeout(function () {
+				battle.changeState("cowboyWin");
 			}, battle.delay.winningTime);
 	
-			document.addEventListener("click", function (e) {
+			document.addEventListener("click", function userShoot(e) {
+				e.preventDefault();
 				// player.shoot();
 				_Sounds2.default.shoot.play();
 				if (!e.target.classList.contains("gunman")) {
@@ -89,18 +90,24 @@
 					return;
 				}
 				if (!battle.canFireFlag) {
-					console.log('You are very fast');
+					clearInterval(battle.prepareToFire);
+					clearInterval(battle.shooting);
+					clearInterval(battle.cowboyWin);
+					battle.changeState("faultStart");
+					console.log("game in", game);
 				} else {
-					clearInterval(battle.winning);
+					clearInterval(battle.cowboyWin);
 				}
 			});
 		};
 	
-		document.addEventListener("click", function (e) {
+		Game.prototype.end = function () {};
+	
+		document.addEventListener("click", function startGame(e) {
 			if (e.target.id === "start") {
-				var game = new Game();
-				game.init();
-				game.start();
+				var _game = new Game();
+				_game.init();
+				_game.start();
 			}
 		});
 	})();
@@ -174,8 +181,19 @@
 				// cowboy action
 				cowboy.action("shooting");
 				break;
-			case "winning":
+			case "cowboyWin":
+				// Start winning audio
+				_Sounds2.default.death.play();
+				// Add Dead Alert
+				_Arena2.default.cowboyWin();
+				// cowboy action
+				cowboy.action("winning");
 				break;
+			case "faultStart":
+				// Stop audio
+				_Sounds2.default.intro.pause();
+				_Arena2.default.showMenu();
+	
 			default:
 				break;
 		}
@@ -190,7 +208,7 @@
   \*********************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -202,34 +220,25 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var element = _ElementsDOM2.default.cowboy;
-	
 	var Enemy = function () {
 	
 		var Enemy = function Enemy(reactionTime) {
-			// create div for enemy
-			// element = document.createElement("div");
-	
-			element.id = "cowboy";
-			element.classList.add("gunman");
+			this.element = _ElementsDOM2.default.cowboy;
+			this.element.classList.add("gunman");
 	
 			// TODO delete consts > use calc reactionTime
-			this.walkingTime = 3000;
+			this.walkingTime = 5000;
 			this.standingTime = 1000;
 			this.shootingTime = 1500;
 	
 			this.fireStateFlag = false;
-			// Text messages references
-			// this.textFire = Game.assets.textBox.fireText;
-			// this.deadText = Game.assets.textBox.deadText;
-			// this.winText = Game.assets.textBox.winText;		
 		};
 	
 		Enemy.prototype.action = function (newState) {
-			var _self = this;
-			this.state = newState;
 	
-			switch (this.state) {
+			var element = this.element;
+	
+			switch (newState) {
 				case 'going':
 					// Add go animation
 					element.classList.add("gunman_go");
@@ -251,40 +260,35 @@
 					element.style.animation = "shooting " + this.shootingTime / 1000 + "s steps(4)";
 					break;
 	
-				// case 'winning':
-				// 	// delete shooting event
+				case 'winning':
 	
-				// 	// Start winning audio
-				// 	Game.assets.sounds.death.play();
-				// 	// Add Dead Alert
-				// 	this.arena.removeChild(this.textFire);
-				// 	setTimeout(function() {	            		
-				// 		_self.arena.appendChild(_self.deadText);
-				// 		}, 100);
+					break;
 	
-				//     break;
+				case 'dead':
+					$('.gunman_alert').hide();
+					this.$gunman.removeClass("gunman_shooting").addClass("gunman_dead");
+					setTimeout(function () {
+						$(".gunman").hide();
+					}, 1000);
+					this.$result.text("Congratulations!!! You win!!!").appendTo(".wrapper");
+					// Start audio
+					Game.assets.sounds.win.play();
+					// Add dead animation
+					this.enemyDOMELement.classList.remove("gunman_shooting");
+					this.enemyDOMELement.classList.add("gunman_dead");
+					this.enemyDOMELement.style.animation = "dead 1s steps(1);";
+					setTimeout(function () {
+						_self.arena.removeChild(_self.textFire);
+						_self.arena.appendChild(_self.winText);
+						_self.arena.removeChild(_self.enemyDOMELement);
+					}, 2500);
 	
-				// case 'dead':
-				// 	// Start audio
-				// 	Game.assets.sounds.win.play();
-				// 	// Add dead animation
-				// 	element.classList.remove("gunman_shooting");
-				//     element.classList.add("gunman_dead");
-				//     element.style.animation = "dead 1s steps(1);";
-				//     setTimeout(function() {
-				//     	_self.arena.removeChild(_self.textFire);
-				//     	_self.arena.appendChild(_self.winText);
-				//     	_self.arena.removeChild(_self.enemyDOMELement);
-				//     }, 2500);
-	
-				//     break;
+					break;
 	
 				default:
 	
 					break;
 			};
-	
-			// function(newPos)
 		};
 	
 		return Enemy;
@@ -310,21 +314,31 @@
 		cowboy: document.createElement("div"),
 		menu: document.getElementById("menu"),
 		score: document.createElement("div"),
-		textBox: {
-			"fireText": createTextBoxtContainer("FIRE!!!"),
-			"fastFire": createTextBoxtContainer("You are very fast"),
-			"deadText": createTextBoxtContainer("You are dead!!!"),
-			"winText": createTextBoxtContainer("You win!!!")
+		alertBox: {
+			"fireText": createTextBoxtContainer("alertBox", "FIRE!!!"),
+			"fastFire": createTextBoxtContainer("alertBox", "You are very fast")
+		},
+		resultBox: {
+			"deadText": createTextBoxtContainer("resultBox", "You are dead!!!"),
+			"winText": createTextBoxtContainer("resultBox", "You win!!!")
 		}
 	};
 	
-	function createTextBoxtContainer(textOutput) {
+	function createTextBoxtContainer(typeBox, textOutput) {
 		var container = document.createElement("div");
 		var content = document.createTextNode(textOutput);
 	
 		container.appendChild(content);
-		container.classList.add("alert_message");
-	
+		switch (typeBox) {
+			case "alertBox":
+				container.classList.add("alert_message");
+				break;
+			case "resultBox":
+				container.classList.add("result_msg");
+				break;
+			default:
+				break;
+		}
 		return container;
 	}
 	exports.default = DOM;
@@ -384,7 +398,22 @@
 				_ElementsDOM2.default.arena.appendChild(_ElementsDOM2.default.cowboy);
 			},
 			alertMsg: function alertMsg(newText) {
-				_ElementsDOM2.default.arena.appendChild(_ElementsDOM2.default.textBox[newText]);
+				_ElementsDOM2.default.arena.appendChild(_ElementsDOM2.default.alertBox[newText]);
+			},
+			cowboyWin: function cowboyWin() {
+				_ElementsDOM2.default.arena.removeChild(_ElementsDOM2.default.alertBox.fireText);
+				setTimeout(function () {
+					_ElementsDOM2.default.arena.appendChild(_ElementsDOM2.default.resultBox.deadText);
+				}, 100);
+				setTimeout(function () {
+					_ElementsDOM2.default.arena.removeChild(_ElementsDOM2.default.cowboy);
+				}, 2500);
+			},
+			showMenu: function showMenu() {
+				while (_ElementsDOM2.default.arena.firstChild) {
+					_ElementsDOM2.default.arena.removeChild(_ElementsDOM2.default.arena.firstChild);
+				}
+				_ElementsDOM2.default.arena.appendChild(_ElementsDOM2.default.menu);
 			}
 		};
 	}();

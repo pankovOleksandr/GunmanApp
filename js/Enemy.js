@@ -7,7 +7,7 @@ let Enemy = (function(){
 			this.element.classList.add("gunman");
 			
 			// TODO delete consts > use calc reactionTime
-			this.walkingTime = 3000;
+			this.walkingTime = 5000;
 			this.standingTime = 1000;
 			this.shootingTime = 1500;			
 			
@@ -44,10 +44,31 @@ let Enemy = (function(){
 
 	            case 'winning':
 	            	
+                                
+                
 	                break;
 	                
 	            case 'dead':
-	            	
+	            	$('.gunman_alert').hide();
+                this.$gunman.removeClass("gunman_shooting")
+                            .addClass("gunman_dead");
+                setTimeout(function() {
+                    $(".gunman").hide();
+                    }, 1000)
+                this.$result.text("Congratulations!!! You win!!!")
+                            .appendTo(".wrapper");
+                    // Start audio
+	            	Game.assets.sounds.win.play();
+	            	// Add dead animation
+	            	this.enemyDOMELement.classList.remove("gunman_shooting");
+	                this.enemyDOMELement.classList.add("gunman_dead");
+	                this.enemyDOMELement.style.animation = "dead 1s steps(1);";
+	                setTimeout(function() {
+	                	_self.arena.removeChild(_self.textFire);
+	                	_self.arena.appendChild(_self.winText);
+	                	_self.arena.removeChild(_self.enemyDOMELement);
+	                }, 2500);
+
 	                break;
 
 	            default:

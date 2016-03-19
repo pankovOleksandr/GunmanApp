@@ -44,8 +44,19 @@ Battle.prototype.changeState = function(newState) {
 			// cowboy action
 			cowboy.action("shooting");
 			break;
-		case "winning":
+		case "cowboyWin":
+			// Start winning audio
+        	Sounds.death.play();
+        	// Add Dead Alert
+        	Arena.cowboyWin();
+        	// cowboy action
+        	cowboy.action("winning");
 			break;
+		case "faultStart":
+			// Stop audio
+	        Sounds.intro.pause();
+	        Arena.showMenu();
+
 		default:
 			break;
 	}

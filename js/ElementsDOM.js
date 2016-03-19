@@ -4,21 +4,31 @@ let DOM = {
 		cowboy: document.createElement("div"),
 		menu: document.getElementById("menu"),
 		score: document.createElement("div"),
-		textBox: {
-			"fireText" : createTextBoxtContainer("FIRE!!!"),
-			"fastFire" : createTextBoxtContainer("You are very fast"),
-			"deadText" : createTextBoxtContainer("You are dead!!!"),
-			"winText" : createTextBoxtContainer("You win!!!")
-		}
+		alertBox: {
+			"fireText" : createTextBoxtContainer("alertBox", "FIRE!!!"),
+			"fastFire" : createTextBoxtContainer("alertBox", "You are very fast"),
+		},
+		resultBox: {
+			"deadText" : createTextBoxtContainer("resultBox", "You are dead!!!"),
+			"winText" : createTextBoxtContainer("resultBox", "You win!!!")
+		} 
 	}
 
-	function createTextBoxtContainer (textOutput) {
+	function createTextBoxtContainer (typeBox, textOutput) {
 		var container = document.createElement("div");
 		var content = document.createTextNode(textOutput);
 
 		container.appendChild(content);
-		container.classList.add("alert_message");
-
+		switch (typeBox) {
+			case "alertBox":
+				container.classList.add("alert_message");
+				break;
+			case "resultBox":
+				container.classList.add("result_msg");
+				break;
+			default:
+				break;
+		} 
 		return container;
 	}
 export default DOM;

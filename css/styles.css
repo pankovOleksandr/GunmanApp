@@ -77,6 +77,15 @@ header div {
     top: 30%;
     font-weight: 900;
     font-size: 34px;
+    animation: fontbulger 1.5s;
 }
+
+@keyframes fontbulger {
+  0% {
+    font-size: 22px;
+  }
+   100% {
+    font-size:34px;
+  }
 
 
