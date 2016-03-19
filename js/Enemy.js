@@ -3,7 +3,9 @@ import elements from './ElementsDOM';
 let Enemy = (function(){
 
 		var Enemy = function(reactionTime) {
-			this.element = elements.cowboy;
+			this.element = document.createElement("div");
+			this.element.id = "cowboy";
+			// this.element = elements.cowboy;
 			this.element.classList.add("gunman");
 			
 			// TODO delete consts > use calc reactionTime
@@ -23,7 +25,9 @@ let Enemy = (function(){
 	        switch(newState){
 	            case 'going':	            		            	
 	            	// Add go animation
-	            	element.classList.add("gunman_go");	            	        		
+	            	element.classList.add("gunman_go");
+
+	            	elements.arena.appendChild(element);            	        		
 	        		// Set position for battle
 	        		$(element).animate({right : "50%"},  this.walkingTime, "linear");
 	        		
@@ -43,32 +47,18 @@ let Enemy = (function(){
 	                break;
 
 	            case 'winning':
-	            	
-                                
-                
+	            	setTimeout(() =>{
+						elements.arena.removeChild(Elements.cowboy);
+					}, 2500);               
 	                break;
 	                
 	            case 'dead':
-	            	$('.gunman_alert').hide();
-                this.$gunman.removeClass("gunman_shooting")
-                            .addClass("gunman_dead");
-                setTimeout(function() {
-                    $(".gunman").hide();
-                    }, 1000)
-                this.$result.text("Congratulations!!! You win!!!")
-                            .appendTo(".wrapper");
-                    // Start audio
-	            	Game.assets.sounds.win.play();
-	            	// Add dead animation
-	            	this.enemyDOMELement.classList.remove("gunman_shooting");
-	                this.enemyDOMELement.classList.add("gunman_dead");
-	                this.enemyDOMELement.style.animation = "dead 1s steps(1);";
-	                setTimeout(function() {
-	                	_self.arena.removeChild(_self.textFire);
-	                	_self.arena.appendChild(_self.winText);
-	                	_self.arena.removeChild(_self.enemyDOMELement);
-	                }, 2500);
-
+	                element.classList.remove("gunman_shooting");
+	                element.classList.add("gunman_dead");
+	            	setTimeout(() =>{
+						elements.arena.removeChild(Elements.cowboy);
+					}, 2500);
+	                
 	                break;
 
 	            default:

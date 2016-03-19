@@ -15,11 +15,10 @@ let Battle = function() {
 }
 
 Battle.prototype.changeState = function(newState) {
-	let state = newState;
-	console.log("change state = ", state);
+	console.log("change state = ", newState);
 	let cowboy = this.cowboy;
 
-	switch(state) {
+	switch(newState) {
 		case "begin":
 			Arena.create();
 			// Start audio
@@ -45,17 +44,20 @@ Battle.prototype.changeState = function(newState) {
 			cowboy.action("shooting");
 			break;
 		case "cowboyWin":
-			// Start winning audio
-        	Sounds.death.play();
+			Sounds.death.play();
         	// Add Dead Alert
         	Arena.cowboyWin();
-        	// cowboy action
         	cowboy.action("winning");
 			break;
 		case "faultStart":
-			// Stop audio
-	        Sounds.intro.pause();
+			Sounds.intro.pause();
 	        Arena.showMenu();
+	        break;
+	    case "userWin":
+	    	Sounds.win.play();
+	    	cowboy.action("dead");
+	    	Arena.congratulation();
+	    	break;
 
 		default:
 			break;

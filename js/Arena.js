@@ -1,33 +1,38 @@
-import Elements from './ElementsDOM'; 
+import elements from './ElementsDOM'; 
 
 let Arena = (function() {
 	
 	return {
 		create() {
-			Elements.arena.removeChild(Elements.menu);
-			Elements.arena.appendChild(Elements.cowboy);
+			elements.arena.removeChild(elements.menu);
 		},
 		alertMsg(newText) {
-			Elements.arena.appendChild(Elements.alertBox[newText]);
+			elements.arena.appendChild(elements.alertBox[newText]);
 		},
 		cowboyWin() {
-			Elements.arena.removeChild(Elements.alertBox.fireText);
+			elements.arena.removeChild(elements.alertBox.fireText);
 			setTimeout(() => {
-				Elements.arena.appendChild(Elements.resultBox.deadText);
-			}, 100);
-			setTimeout(() =>{
-				Elements.arena.removeChild(Elements.cowboy);
-			}, 2500)
+				elements.arena.appendChild(elements.resultBox.deadText);
+			}, 100);			
 		},
 		showMenu() {
-			while (Elements.arena.firstChild) {
-				Elements.arena.removeChild(Elements.arena.firstChild);
-			}
-			Elements.arena.appendChild(Elements.menu);
+			deleteChilds(elements.arena);
+			elements.arena.appendChild(elements.menu);
+		},
+		congratulation() {
+			elements.arena.removeChild(elements.alertBox.fireText);
+			elements.arena.appendChild(elements.resultBox.winText);
+			
 		}
 	}
 
 })();
+
+function deleteChilds(parentNode) {
+	while (parentNode.firstChild) {
+				parentNode.removeChild(parentNode.firstChild);
+			}
+}
 
 export default Arena;
 
